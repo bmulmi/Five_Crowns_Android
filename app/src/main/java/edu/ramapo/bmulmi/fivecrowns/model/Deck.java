@@ -6,7 +6,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
-class Deck {
+public class Deck {
     private static Deck deck = null;
     private static Deque<Card> drawPile = null;
     private static Deque<Card> discardPile = null;
@@ -18,7 +18,7 @@ class Deck {
     private final int numJokers = 3;
     private final String [] suite = new String[]{"S", "C", "D", "H", "T"};
     private final String [] face = new String[]{"3", "4", "5", "6", "7", "8",
-                                            "9", "X", "J", "Q", "K"};
+            "9", "X", "J", "Q", "K"};
 
     private Deque<Card> createDeck() {
         Deque<Card> temp = new LinkedList<>();
@@ -132,22 +132,18 @@ class Deck {
     public void shuffleDeck() {
         drawPile.clear();
         discardPile.clear();
-        List<Card>temp = new ArrayList<>(arrangeDeck(2));
+        List<Card> temp = new ArrayList<>(arrangeDeck(2));
         Collections.shuffle(temp);
         for (Card a_card : temp) {
             drawPile.push(a_card);
         }
     }
 
-    public void printCards(Deque<Card> cards) {
+    public String toString(Deque<Card> cards) {
+        String temp = "";
         for (Card a_card : cards) {
-            System.out.print(a_card.toString() + ",");
+            temp += a_card.toString() + ",";
         }
-    }
-
-    public static void main(String [] args) {
-        Deck tDeck = getInstanceOfDeck(2);
-        Deque<Card> tDraw = tDeck.getDrawPile();
-        tDeck.printCards(tDraw);
+        return temp;
     }
 }
