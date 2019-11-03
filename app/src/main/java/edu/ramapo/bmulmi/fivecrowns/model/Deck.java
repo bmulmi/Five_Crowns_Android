@@ -11,10 +11,13 @@ public class Deck {
     private static Deque<Card> drawPile = null;
     private static Deque<Card> discardPile = null;
     private String wildCardFace;
+
     private Deck(int numDecks) {
         Deque<Card> initialDeck = arrangeDeck(numDecks);
         drawPile = initialDeck;
+        discardPile = new LinkedList<>();
     }
+
     private final int numJokers = 3;
     private final String [] suite = new String[]{"S", "C", "D", "H", "T"};
     private final String [] face = new String[]{"3", "4", "5", "6", "7", "8",

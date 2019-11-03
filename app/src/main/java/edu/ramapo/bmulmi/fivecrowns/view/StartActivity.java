@@ -69,7 +69,8 @@ public class StartActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
-                prompt.show();            }
+                prompt.show();
+            }
         });
     }
 }

@@ -1,4 +1,4 @@
 package edu.ramapo.bmulmi.fivecrowns.model;
 
-public class Computer {
+public class Computer extends Player{
 }

@@ -1,0 +1,15 @@
+10/28/2019
+- Created Android Project
+- Added the necessary Java model classes
+- Card and Deck classes completed
+Total Hours: 2 hrs
+
+11/2/2019
+- created StartActivity as launcher activity.
+- added new game and load game functionalities.
+- added card drawables to res.
+Total Hours: 4 hrs
+
+11/3/2019
+- created Game and Round model
+-

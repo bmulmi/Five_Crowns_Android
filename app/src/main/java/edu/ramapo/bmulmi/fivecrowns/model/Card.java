@@ -25,14 +25,19 @@ public class Card {
         String temp = this.suite;
         return temp;
     }
+
     public String getFace() {
         String temp = this.face;
         return temp;
     }
+
     public String toString () {
-        String temp = face + suite;
+        String temp;
+        if (this.isJoker()) { temp = face.toLowerCase() + suite; }
+        else { temp = suite.toLowerCase() + face.toLowerCase(); }
         return temp;
     }
+
     public boolean isJoker() {
         return (this.face.equals("J") && (this.suite.equals("1") || this.suite.equals("2") || this.suite.equals("3")));
     }

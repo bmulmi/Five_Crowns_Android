@@ -1,4 +1,4 @@
 package edu.ramapo.bmulmi.fivecrowns.model;
 
-public class Human {
+public class Human extends Player {
 }
