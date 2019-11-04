@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Random;
 import java.util.Vector;
 
 public class Game {
@@ -40,7 +41,8 @@ public class Game {
     }
 
     public Round generateNewRound() {
-        round = new Round(human, computer, this.roundNumber++);
+        round = new Round(human, computer, this.roundNumber);
+        roundNumber++;
         return round;
     }
 
@@ -51,5 +53,9 @@ public class Game {
         return roundNumber > 11;
     }
 
-
+    public int toss() {
+        Random rand = new Random();
+        int temp = rand.nextInt(15189);
+        return temp%2;
+    }
 }

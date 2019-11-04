@@ -143,9 +143,9 @@ public class Deck {
     }
 
     public String toString(Deque<Card> cards) {
-        String temp = "";
+        String temp = new String();
         for (Card a_card : cards) {
-            temp += a_card.toString() + ",";
+            temp += a_card.serializableString() + " ";
         }
         return temp;
     }

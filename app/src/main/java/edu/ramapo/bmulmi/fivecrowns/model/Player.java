@@ -35,12 +35,23 @@ public class Player {
         this.hand = hand;
     }
 
+    public void addToHand(Card card) {
+        this.hand.add(card);
+    }
+
     public void clearHand() {
         this.hand.clear();
     }
 
-    public void removeFromHand(int index) {
-        this.hand.remove(index);
+    public Card removeFromHand(int index) {
+        return this.hand.remove(index);
     }
 
+    public String getSerializableHand() {
+        String temp = new String();
+        for (Card each : hand) {
+            temp += each.serializableString() + " ";
+        }
+        return temp;
+    }
 }

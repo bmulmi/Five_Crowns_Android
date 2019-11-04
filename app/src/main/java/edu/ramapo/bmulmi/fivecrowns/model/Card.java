@@ -38,6 +38,10 @@ public class Card {
         return temp;
     }
 
+    public String serializableString() {
+        return face + suite;
+    }
+
     public boolean isJoker() {
         return (this.face.equals("J") && (this.suite.equals("1") || this.suite.equals("2") || this.suite.equals("3")));
     }

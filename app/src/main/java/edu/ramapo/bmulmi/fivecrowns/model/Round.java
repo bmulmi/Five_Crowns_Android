@@ -40,6 +40,10 @@ public class Round {
         }
         player.setHand(hand);
     }
+    public void setNextPlayer(Class player) {
+        if (player == Human.class) nextPlayer = human;
+        else nextPlayer = computer;
+    }
 
     public Vector<Card> getHumanHand(){
         return human.getHand();
@@ -57,7 +61,20 @@ public class Round {
         return computer.getScore();
     }
 
+    public void draw(String pile) {
+        deck = Deck.getInstanceOfDeck(2);
+        if (pile.equals("discard")) {
+            human.addToHand(deck.drawDiscardCard());
+        }
+        else if (pile.equals("draw")) {
+            human.addToHand(deck.drawCard());
+        }
+    }
 
+    public void discard(int index) {
+        deck = Deck.getInstanceOfDeck(2);
+        deck.discard(human.removeFromHand(index));
+    }
 //    public String getSerializableInfo() {
 //
 //    }
@@ -151,5 +168,26 @@ public class Round {
 
     public Player getNextPlayer() {
         return nextPlayer;
+    }
+
+    public String playComputer() {
+        String temp = "";
+        return temp;
+    }
+
+    public String serialize() {
+        deck = Deck.getInstanceOfDeck(2);
+        StringBuilder info = new StringBuilder();
+        info.append("Round: ").append(Integer.toString(roundNumber)).append("\n");
+        info.append("\nComputer:\n");
+        info.append("\tScore: ").append(computer.getScore()).append("\n");
+        info.append("\tHand: ").append(computer.getSerializableHand()).append("\n");
+        info.append("\nHuman:\n");
+        info.append("\tScore: ").append(human.getScore()).append("\n");
+        info.append("\tHand: ").append(human.getSerializableHand()).append("\n");
+        info.append("\nDraw Pile: ").append(deck.toString(deck.getDrawPile())).append("\n");
+        info.append("\nDiscard Pile: ").append(deck.toString(deck.getDiscardPile())).append("\n");
+        info.append("\nNext Player: ").append(nextPlayer.getClass()).append("\n");
+        return info.toString();
     }
 }
