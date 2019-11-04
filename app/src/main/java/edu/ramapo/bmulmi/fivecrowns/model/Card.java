@@ -3,6 +3,10 @@ package edu.ramapo.bmulmi.fivecrowns.model;
 public class Card {
     private String face;
     private String suite;
+    public Card() {
+        this("","");
+    }
+
     public Card(String face, String suite) {
         this.face = face;
         this.suite = suite;

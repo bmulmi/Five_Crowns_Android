@@ -187,7 +187,7 @@ public class Round {
         info.append("\tHand: ").append(human.getSerializableHand()).append("\n");
         info.append("\nDraw Pile: ").append(deck.toString(deck.getDrawPile())).append("\n");
         info.append("\nDiscard Pile: ").append(deck.toString(deck.getDiscardPile())).append("\n");
-        info.append("\nNext Player: ").append(nextPlayer.getClass()).append("\n");
+        info.append("\nNext Player: ").append(nextPlayer.getType()).append("\n");
         return info.toString();
     }
 }
