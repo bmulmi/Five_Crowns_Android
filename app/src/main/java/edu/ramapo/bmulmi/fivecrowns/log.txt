@@ -12,4 +12,7 @@ Total Hours: 4 hrs
 
 11/3/2019
 - created Game and Round model
--
+
+11/17/2019
+- changed the canBeRun method parameter missingCardsCount to an array to make it mutable
+- removed redundant copies of vectors

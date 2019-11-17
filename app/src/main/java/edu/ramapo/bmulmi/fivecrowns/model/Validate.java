@@ -6,7 +6,7 @@ public class Validate {
     public static boolean isRun(Vector<Card> a_hand) {
         if (a_hand.size() < 3) return false;
 
-        Vector<Card> initialHand = a_hand;
+        Vector<Card> initialHand = Player.copyCards(a_hand);
         Vector<Card> jokerCards = extractJokerCards(initialHand);
         Vector<Card> wildCards = extractWildCards(initialHand);
 
@@ -15,9 +15,9 @@ public class Validate {
         if (hasSameSuite(initialHand)) {
             String suite = initialHand.elementAt(0).getSuite();
             sortCards(initialHand);
-            int missingCardsCount = 0;
+            int [] missingCardsCount = {0};
             boolean potentialRun = canBeRun(initialHand, missingCardsCount);
-            if (potentialRun && missingCardsCount <= (jokerCards.size() + wildCards.size())) {
+            if (potentialRun && missingCardsCount[0] <= (jokerCards.size() + wildCards.size())) {
                 return true;
             }
         }
@@ -26,15 +26,16 @@ public class Validate {
 
     public static boolean isBook(Vector<Card> a_hand) {
         if (a_hand.size() < 3) return false;
+
         Deck deck = Deck.getInstanceOfDeck(2);
         String wildCard = deck.getWildCardFace();
-        Vector<Card> initialHand = a_hand;
+        Vector<Card> initialHand = Player.copyCards(a_hand);
         Vector<Card> jokerCards = extractJokerCards(initialHand);
         Vector<Card> wildCards = extractWildCards(initialHand);
 
         if ((initialHand.isEmpty())) return true;
 
-        for (int i = 0; i < initialHand.size(); i++) {
+        for (int i = 0; i < initialHand.size() - 1; i++) {
             if (initialHand.elementAt(i).getFaceValue() != initialHand.elementAt(i+1).getFaceValue()) {
                 return false;
             }
@@ -53,14 +54,14 @@ public class Validate {
         return true;
     }
 
-    public static boolean canBeRun(Vector<Card> a_cards, int missingCardsCount) {
+    public static boolean canBeRun(Vector<Card> a_cards, int[] missingCardsCount) {
         for (int i = 0; i < a_cards.size() - 1; i++) {
             if (a_cards.elementAt(i).getFaceValue() == a_cards.elementAt(i+1).getFaceValue()-1)
                 continue;
             if (a_cards.elementAt(i).getFaceValue() == a_cards.elementAt(i+1).getFaceValue())
                 return false;
             if (a_cards.elementAt(i).getFaceValue() < a_cards.elementAt(i+1).getFaceValue())
-                missingCardsCount += a_cards.elementAt(i+1).getFaceValue() - a_cards.elementAt(i).getFaceValue()-1;
+                missingCardsCount[0] += a_cards.elementAt(i+1).getFaceValue() - a_cards.elementAt(i).getFaceValue()-1;
         }
         return true;
     }

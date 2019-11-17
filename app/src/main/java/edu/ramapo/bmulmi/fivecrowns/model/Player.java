@@ -21,11 +21,11 @@ public class Player {
     }
 
     public int getScore() {
-        return score;
+        return this.score;
     }
 
     public Vector<Card> getHand() {
-        return hand;
+        return this.hand;
     }
 
     public void setScore(int score) {
@@ -48,6 +48,14 @@ public class Player {
         this.hand.clear();
     }
 
+    public static Vector<Card> copyCards(Vector<Card> a_hand) {
+        Vector<Card> temp = new Vector<>();
+        for (Card each : a_hand) {
+            temp.add(each);
+        }
+        return temp;
+    }
+
     public Card removeFromHand(int index) {
         return this.hand.remove(index);
     }
@@ -68,8 +76,7 @@ public class Player {
         Vector<Vector<Card>> possibleCombos = assemblePossibleHand();
 
         Vector<Card> scoreHand = possibleCombos.lastElement();
-        int currScore = Validate.calculateScore(scoreHand);
-        return currScore;
+        return Validate.calculateScore(scoreHand);
     }
 
     public void removeCards(Vector<Card> a_hand, Vector<Card> a_cards) {
@@ -89,16 +96,16 @@ public class Player {
         return temp == 0;
     }
 
-    private String whichPileToChoose() {
+    protected String whichPileToChoose() {
         deck = Deck.getInstanceOfDeck(2);
 
         // stores the discard pile card
         Card pickedCard = deck.showDiscardCard();
 
         String wildCard = deck.getWildCardFace();
-        Vector<Card> copyHand = this.hand;
+        Vector<Card> copyHand = copyCards(this.hand);
         Assembled assembledHand = new Assembled(copyHand);
-        int scr = getLowestScore(copyHand, assembledHand);
+        int scr = getLowestScore(copyHand, assembledHand);         // stores the score of current hand before picking up the card
         boolean chooseDiscard = false;
 
         // pick the discard card
@@ -108,7 +115,7 @@ public class Player {
         // check if the player will have more books or runs with lower score
         // with the newly picked card
         for (int i = 0; i < hand.size(); i++) {
-            Vector<Card> temp = copyHand;
+            Vector<Card> temp = copyCards(copyHand);
             temp.remove(i);
             Assembled curr_assembledHand = new Assembled(temp);
             int curr_scr = getLowestScore(temp, curr_assembledHand);
@@ -132,16 +139,16 @@ public class Player {
         }
     }
 
-    private Card whichCardToDiscard() {
-        Vector<Card> currHand = hand;
-        Card card_r = new Card();
+    protected int whichCardToDiscard() {
+        Vector<Card> currHand = this.hand;
+        int card_r = -1;
         int currScore = 99999;
 
         deck = Deck.getInstanceOfDeck(2);
         String wildCard = deck.getWildCardFace();
 
         for (int i = 0; i < currHand.size(); i++) {
-            Vector<Card> temp = currHand;
+            Vector<Card> temp = copyCards(currHand);
 
             if (currHand.elementAt(i).isJoker() || currHand.elementAt(i).getFace().equals(wildCard))
                 continue;
@@ -153,13 +160,13 @@ public class Player {
             int tempScr = getLowestScore(temp, assembledHand);
             if (tempScr < currScore) {
                 currScore = tempScr;
-                card_r = currHand.elementAt(i);
+                card_r = i;
             }
         }
         return card_r;
     }
 
-    private Vector<Vector<Card>> assemblePossibleHand() {
+    protected Vector<Vector<Card>> assemblePossibleHand() {
         Vector<Card> currHand = this.hand;
         Assembled assembledHand = new Assembled(currHand);
 
@@ -197,19 +204,18 @@ public class Player {
         int minScore = 99999;
 
 //        Vector<Card> bestCombo;
-        Vector<Card> t_hand = a_hand;
+        Vector<Card> t_hand = copyCards(a_hand);
         Validate.sortCards(t_hand);
         Vector<Vector<Card>> booksAndRuns = getBooksAndRuns(t_hand);
 
         if (booksAndRuns.isEmpty()) {
-            Assembled temp_assembled = new Assembled(t_hand);
-            assembled_hands.bestChild = temp_assembled;
+            assembled_hands.bestChild = new Assembled(t_hand);
             assembled_hands.bestCombo = a_hand;
             return Validate.calculateScore(a_hand);
         }
         else {
             for (Vector<Card> each : booksAndRuns) {
-                Vector<Card> temp_hand = a_hand;
+                Vector<Card> temp_hand = copyCards(a_hand);
                 removeCards(temp_hand, each);
                 Assembled temp_assembled = new Assembled(temp_hand);
                 int scr = getLowestScore(temp_hand, temp_assembled);
@@ -226,10 +232,9 @@ public class Player {
 
     private Vector<Vector<Card>> getBooksAndRuns(Vector<Card> a_hand) {
         Vector<Vector<Card>> temp = new Vector<>();
-        Vector<Card> temp_hand = a_hand;
-        getBooksOrRuns(temp_hand, temp, 0);
+        getBooksOrRuns(a_hand, temp, 0);
 
-        Vector<Vector<Card>> temp_sameSuiteHands = getSameSuiteHands(temp_hand);
+        Vector<Vector<Card>> temp_sameSuiteHands = getSameSuiteHands(a_hand);
         for (Vector<Card> each : temp_sameSuiteHands) {
             getBooksOrRuns(each, temp, 1);
         }
@@ -243,7 +248,7 @@ public class Player {
     }
 
     private void getBooksOrRuns(Vector<Card> a_hand, Vector<Vector<Card>> a_collection, int check_type) {
-        Vector<Card> temp_hand = a_hand;
+        Vector<Card> temp_hand = copyCards(a_hand);
         Vector<Card> temp_jokers = Validate.extractJokerCards(temp_hand);
         Vector<Card> temp_wilds = Validate.extractWildCards(temp_hand);
         int totalJnW = temp_jokers.size() + temp_wilds.size();
@@ -290,7 +295,7 @@ public class Player {
 
         // STEP 4: check with Jokers AND WildCards in each combination
         // reset the variables
-        temp_hand = a_hand;
+        temp_hand = copyCards(a_hand);
         temp_jokers = Validate.extractJokerCards(temp_hand);
         temp_wilds = Validate.extractWildCards(temp_hand);
         if (!temp_jokers.isEmpty() && !temp_wilds.isEmpty()) {
@@ -303,7 +308,7 @@ public class Player {
             for (int j = 0; j < a_hand.size() + 1 - i; j++) {
                 Vector<Card> curr = new Vector<>();
                 copyHand(a_hand, curr, i, i+j);
-                Vector<Card> cardsToCombine = a_cards;
+                Vector<Card> cardsToCombine = copyCards(a_cards);
 
                 while(!cardsToCombine.isEmpty()) {
                     Card currCard = cardsToCombine.elementAt(0);
@@ -330,7 +335,7 @@ public class Player {
         for (int i = 0; i < a_hand.size(); i++) {
             for (int j = 0; j < a_hand.size() + 1 - i; j++) {
                 Vector<Card> curr = new Vector<>();
-                Vector<Card> temp_cards1 = a_cards1;
+                Vector<Card> temp_cards1 = copyCards(a_cards1);
 
                 // check this group of cards with wild cards for runs or books
                 while(!temp_cards1.isEmpty()) {
@@ -338,8 +343,8 @@ public class Player {
                     temp_cards1.remove(0);
                     curr.add(currWilds);
 
-                    Vector<Card> copy_curr = curr;
-                    Vector<Card> temp_cards2 = a_cards2;
+                    Vector<Card> copy_curr = copyCards(curr);
+                    Vector<Card> temp_cards2 = copyCards(a_cards2);
 
                     while(!temp_cards2.isEmpty()) {
                         Card currJoker = temp_cards2.elementAt(0);
@@ -374,6 +379,7 @@ public class Player {
                     curr.add(e_card);
                 }
             }
+            // add the jokers or wild cards only when there are 2 or more cards
             if (curr.size() > 1) {
                 for (Card each : jokers) {
                     curr.add(each);

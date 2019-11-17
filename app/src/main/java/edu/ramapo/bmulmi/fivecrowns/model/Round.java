@@ -7,16 +7,16 @@ import java.util.LinkedList;
 import java.util.Vector;
 
 public class Round {
-    private Player human;
-    private Player computer;
+    private Human human;
+    private Computer computer;
     private Player nextPlayer;
     private Deck deck;
     private int roundNumber;
 
     public Round(Player human, Player computer, int roundNumber) {
         this.roundNumber = roundNumber;
-        this.human = human;
-        this.computer = computer;
+        this.human = (Human) human;
+        this.computer = (Computer) computer;
         this.deck = Deck.getInstanceOfDeck(2);
     }
 
@@ -75,12 +75,10 @@ public class Round {
         deck = Deck.getInstanceOfDeck(2);
         deck.discard(human.removeFromHand(index));
     }
-//    public String getSerializableInfo() {
-//
-//    }
 
     public void load(BufferedReader info) {
         deck = Deck.getInstanceOfDeck(2);
+        deck.setWildCardFace(roundNumber + 2);
 
         try {
             // Empty Line
@@ -171,7 +169,33 @@ public class Round {
     }
 
     public String playComputer() {
+        return computer.play();
+    }
+
+    public String getPileHint() {
+        return human.whichPileToChoose();
+    }
+
+    public int getDiscardHint() {
+        return human.whichCardToDiscard();
+    }
+
+    public String arrangeHand() {
+        Vector<Vector<Card>> arrangedHand = human.assemblePossibleHand();
         String temp = "";
+        Vector<Card> tempHand = new Vector<>();
+        for (Vector<Card> eachHand : arrangedHand) {
+            for (Card each : eachHand) {
+                tempHand.add(each);
+                temp += each.serializableString() + " ";
+            }
+            temp += " | ";
+        }
+
+        human.setHand(tempHand);
+
+        temp += "Hand score: " + human.getHandScore();
+
         return temp;
     }
 

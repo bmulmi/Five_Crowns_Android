@@ -3,6 +3,7 @@ package edu.ramapo.bmulmi.fivecrowns.view;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -49,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
         cardDiscarded = true;
         cardDrawn = false;
+        selectedPile = "";
+        selectedHandCard = -1;
 
         Button drawButton = findViewById(R.id.drawButton);
         drawButton.setOnClickListener(new View.OnClickListener() {
@@ -96,9 +99,29 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (cardDiscarded) {
                     // ask for which card to draw
+                    String hint = round.getPileHint();
+                    if (hint.equals("draw")) {
+                        int id = 31;
+                        ImageView pile = findViewById(id);
+                        pile.setBackgroundColor(Color.CYAN);
+                    }
+                    else {
+                        int id = 41;
+                        ImageView pile = findViewById(id);
+                        pile.setBackgroundColor(Color.CYAN);
+                    }
+                    String text = "You should choose " + hint + " pile because it helps in making your score lower.\n";
+                    TextView textView = findViewById(R.id.hintView);
+                    textView.setText(text);
                 }
                 else if (cardDrawn) {
                     // ask for which card to discard
+                    int hint = round.getDiscardHint();
+                    ImageView card = findViewById(hint);
+                    card.setBackgroundColor(Color.CYAN);
+                    String text = "You should discard " + round.getHumanHand().elementAt(hint).serializableString() +" because it helps in making your score lower.\n";
+                    TextView textView = findViewById(R.id.hintView);
+                    textView.setText(text);
                 }
             }
         });
@@ -231,7 +254,8 @@ public class MainActivity extends AppCompatActivity {
             cardView.setImageResource(id);
 
             if (first) {
-                cardView.setTag(pileType);
+                int t_id = pileType.equals("draw") ? 31 : 41;
+                cardView.setId(t_id);
                 cardView.setClickable(true);
                 cardView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -239,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
                         clearCardsBackground();
                         view.setBackgroundColor(Color.YELLOW);
                         selectedPile = pileType;
-                        makeToast(selectedPile);
+//                        makeToast();
                     }
                 });
                 first = false;
@@ -262,14 +286,14 @@ public class MainActivity extends AppCompatActivity {
             cardView.setImageResource(id);
 
             if (human) {
-                cardView.setTag(i);
+                cardView.setId(i);
                 cardView.setClickable(true);
                 cardView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         clearCardsBackground();
                         cardView.setBackgroundColor(Color.YELLOW);
-                        selectedHandCard = Integer.parseInt(cardView.getTag().toString());
+                        selectedHandCard = cardView.getId();
                         makeToast(selectedHandCard + "");
                     }
                 });
