@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private int selectedHandCard;
     private boolean cardDrawn;
     private boolean cardDiscarded;
+    private TextView textBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         cardDrawn = false;
         selectedPile = "";
         selectedHandCard = -1;
+        textBox = findViewById(R.id.hintView);
 
         Button drawButton = findViewById(R.id.drawButton);
         drawButton.setOnClickListener(new View.OnClickListener() {
@@ -111,8 +113,8 @@ public class MainActivity extends AppCompatActivity {
                         pile.setBackgroundColor(Color.CYAN);
                     }
                     String text = "You should choose " + hint + " pile because it helps in making your score lower.\n";
-                    TextView textView = findViewById(R.id.hintView);
-                    textView.setText(text);
+//                    TextView textView = findViewById(R.id.hintView);
+                    textBox.setText(text);
                 }
                 else if (cardDrawn) {
                     // ask for which card to discard
@@ -120,8 +122,8 @@ public class MainActivity extends AppCompatActivity {
                     ImageView card = findViewById(hint);
                     card.setBackgroundColor(Color.CYAN);
                     String text = "You should discard " + round.getHumanHand().elementAt(hint).serializableString() +" because it helps in making your score lower.\n";
-                    TextView textView = findViewById(R.id.hintView);
-                    textView.setText(text);
+//                    TextView textView = findViewById(R.id.hintView);
+                    textBox.setText(text);
                 }
             }
         });
@@ -139,7 +141,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(round.getNextPlayer().getClass() == Computer.class) {
-                    round.playComputer();
+                    textBox.setText(round.playComputer());
+                    refreshLayout();
                 }
             }
         });

@@ -231,7 +231,7 @@ public class Player {
     }
 
     private Vector<Vector<Card>> getBooksAndRuns(Vector<Card> a_hand) {
-        Vector<Vector<Card>> temp = new Vector<>();
+        Vector<Vector<Card>> temp = new Vector<>(new Vector());
         getBooksOrRuns(a_hand, temp, 0);
 
         Vector<Vector<Card>> temp_sameSuiteHands = getSameSuiteHands(a_hand);
@@ -255,7 +255,8 @@ public class Player {
         boolean jokerAdnWildExist = totalJnW != 0;
 
         if (temp_hand.isEmpty() && jokerAdnWildExist) {
-            a_collection.add(a_hand);
+            Vector<Card> t_hand = copyCards(a_hand);
+            a_collection.add(t_hand);
             return;
         }
 

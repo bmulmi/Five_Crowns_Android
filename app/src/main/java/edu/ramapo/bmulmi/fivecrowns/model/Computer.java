@@ -17,7 +17,7 @@ public class Computer extends Player{
             cardPicked = deck.drawDiscardCard();
         }
         else {
-            strategy += "Computer chose draw pile because discard pile card did not help in making more" +
+            strategy += "Computer chose draw pile because discard pile card did not help in making more " +
                     "numbers of complete runs or complete books.\n";
             cardPicked = deck.drawCard();
         }

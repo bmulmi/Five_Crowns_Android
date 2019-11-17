@@ -16,3 +16,5 @@ Total Hours: 4 hrs
 11/17/2019
 - changed the canBeRun method parameter missingCardsCount to an array to make it mutable
 - removed redundant copies of vectors
+- debugged getRunsOrBooks. It was returning an empty vector when the hand had only wild cards and jokers
+    it should have returned the hand with those special cards.
