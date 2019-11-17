@@ -13,6 +13,7 @@ import android.widget.ListView;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import edu.ramapo.bmulmi.fivecrowns.R;
 
@@ -28,10 +29,35 @@ public class StartActivity extends AppCompatActivity {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(StartActivity.this, MainActivity.class);
-                intent.putExtra("state",1);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
+                AlertDialog.Builder guess = new AlertDialog.Builder(StartActivity.this);
+                guess.setTitle("Toss: Heads or Tails");
+                Random rand = new Random();
+                int temp = rand.nextInt(15189);
+                final int tossResult = temp;
+                final String[] choice = {"Heads", "Tails"};
+                final String result;
+
+                guess.setItems(choice, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ListView select = ((AlertDialog)dialogInterface).getListView();
+                        String selected = (String) select.getAdapter().getItem(i);
+                        final Intent intent = new Intent(StartActivity.this, MainActivity.class);
+
+                        intent.putExtra("state",1);
+                        if ((selected.equals("Heads") && tossResult == 0) || (selected.equals("Tails") && tossResult == 1)) {
+                            intent.putExtra("turn", "human");
+                        }
+                        else {
+                            intent.putExtra("turn","computer");
+                        }
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+
+                    }
+                });
+                guess.show();
+
             }
         });
 

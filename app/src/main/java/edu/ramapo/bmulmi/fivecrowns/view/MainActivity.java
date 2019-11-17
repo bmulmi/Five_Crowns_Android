@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private int selectedHandCard;
     private boolean cardDrawn;
     private boolean cardDiscarded;
+    private boolean lastTurn;
     private TextView textBox;
 
     @Override
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        lastTurn = false;
         cardDiscarded = true;
         cardDrawn = false;
         selectedPile = "";
@@ -67,10 +69,12 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else {
                     round.draw(selectedPile);
-                    refreshLayout();
                     selectedPile = "";
                     cardDrawn = true;
                     cardDiscarded = false;
+                    refreshLayout();
+                    findViewById(R.id.arrangeHand).setEnabled(false);
+                    findViewById(R.id.saveButton).setEnabled(false);
                 }
             }
         });
@@ -87,10 +91,13 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else {
                     round.discard(selectedHandCard);
-                    refreshLayout();
                     selectedHandCard = -1;
                     cardDiscarded = true;
                     cardDrawn = false;
+                    changePlayer();
+                    refreshLayout();
+                    findViewById(R.id.arrangeHand).setEnabled(true);
+                    findViewById(R.id.saveButton).setEnabled(true);
                 }
             }
         });
@@ -113,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
                         pile.setBackgroundColor(Color.CYAN);
                     }
                     String text = "You should choose " + hint + " pile because it helps in making your score lower.\n";
-//                    TextView textView = findViewById(R.id.hintView);
                     textBox.setText(text);
                 }
                 else if (cardDrawn) {
@@ -122,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
                     ImageView card = findViewById(hint);
                     card.setBackgroundColor(Color.CYAN);
                     String text = "You should discard " + round.getHumanHand().elementAt(hint).serializableString() +" because it helps in making your score lower.\n";
-//                    TextView textView = findViewById(R.id.hintView);
                     textBox.setText(text);
                 }
             }
@@ -140,8 +145,9 @@ public class MainActivity extends AppCompatActivity {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(round.getNextPlayer().getClass() == Computer.class) {
+                if(round.getNextPlayer().equals("computer")) {
                     textBox.setText(round.playComputer());
+                    changePlayer();
                     refreshLayout();
                 }
             }
@@ -154,8 +160,11 @@ public class MainActivity extends AppCompatActivity {
             game = new Game(1);
             round = game.generateNewRound();
             round.init();
+            String turn = getIntent().getStringExtra("turn");
+            String result = turn.equals("human") ? "You won the toss" : "You lost the toss";
+            makeToast(result);
+            round.setNextPlayer(turn);
             refreshLayout();
-            toss();
         }
         else {
         // load the game
@@ -175,27 +184,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void toss() {
-        AlertDialog.Builder guess = new AlertDialog.Builder(this);
-        guess.setTitle("Toss: Heads or Tails");
-        final int tossResult = game.toss();
-        final String[] choice = {"Heads", "Tails"};
-        guess.setItems(choice, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                ListView select = ((AlertDialog)dialogInterface).getListView();
-                String selected = (String) select.getAdapter().getItem(i);
-                if ((selected.equals("Heads") && tossResult == 0) || (selected.equals("Tails") && tossResult == 1)) {
-                    round.setNextPlayer(Human.class);
-                    makeToast("You Won the Toss! You play first.");
-                }
-                else {
-                    round.setNextPlayer(Computer.class);
-                    makeToast("You Lost the Toss. Computer plays first");
-                }
-            }
-        });
-        guess.show();
+    private void changePlayer(){
+        if (lastTurn) {
+            textBox.setText(round.endRound());
+            String loser = round.getNextPlayer();
+            String startingPlayer = loser.equals("human") ? "computer" : "human";
+            round = game.generateNewRound();
+            round.init();
+            round.setNextPlayer(startingPlayer);
+            refreshLayout();
+            lastTurn = false;
+            return;
+        }
+        if (round.canCurrPlayerGoOut()) {
+            lastTurn = true;
+            round.changePlayer();
+        }
+        else {
+            round.changePlayer();
+        }
     }
 
     public void makeToast(String tst) {
@@ -241,6 +248,38 @@ public class MainActivity extends AppCompatActivity {
         // add cards to hand
         addCardsToHand(humanHandView, humanHand, true);
         addCardsToHand(computerHandView, computerHand, false);
+
+        String nextPlayer = round.getNextPlayer();
+        if(nextPlayer.equals("computer")) {
+            disableHumanButtons();
+            enableComputerButtons();
+        }
+        else {
+            disableComputerButtons();
+            enableHumanButtons();
+        }
+    }
+
+    private void disableHumanButtons() {
+        findViewById(R.id.discardButton).setEnabled(false);
+        findViewById(R.id.drawButton).setEnabled(false);
+        findViewById(R.id.hintButton).setEnabled(false);
+        findViewById(R.id.arrangeHand).setEnabled(false);
+    }
+
+    private void disableComputerButtons(){
+        findViewById(R.id.playButton).setEnabled(false);
+    }
+
+    private void enableHumanButtons() {
+        findViewById(R.id.discardButton).setEnabled(true);
+        findViewById(R.id.drawButton).setEnabled(true);
+        findViewById(R.id.hintButton).setEnabled(true);
+        findViewById(R.id.arrangeHand).setEnabled(true);
+    }
+
+    private void enableComputerButtons() {
+        findViewById(R.id.playButton).setEnabled(true);
     }
 
     private void addCardsToTable(LinearLayout layout, Collection<Card> pile, final String pileType) {

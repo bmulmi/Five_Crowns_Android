@@ -69,7 +69,7 @@ public class Player {
     }
 
     public int getHandScore() {
-        if (canGoOut(hand)) {
+        if (canGoOut()) {
             return 0;
         }
 
@@ -90,9 +90,9 @@ public class Player {
         }
     }
 
-    public boolean canGoOut(Vector<Card> a_hand) {
+    public boolean canGoOut() {
         Assembled assembledHand = new Assembled(hand);
-        int temp = getLowestScore(a_hand, assembledHand);
+        int temp = getLowestScore(this.hand, assembledHand);
         return temp == 0;
     }
 

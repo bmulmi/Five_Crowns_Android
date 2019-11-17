@@ -52,10 +52,4 @@ public class Game {
     public boolean gameEnded() {
         return roundNumber > 11;
     }
-
-    public int toss() {
-        Random rand = new Random();
-        int temp = rand.nextInt(15189);
-        return temp%2;
-    }
 }

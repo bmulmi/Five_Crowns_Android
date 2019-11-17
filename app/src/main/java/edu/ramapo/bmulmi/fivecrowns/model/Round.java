@@ -29,9 +29,9 @@ public class Round {
         deck.discard(deck.drawCard());
     }
 
-//    private boolean roundEnded() {
-//
-//    }
+    public boolean canCurrPlayerGoOut() {
+        return nextPlayer.canGoOut();
+    }
 
     private void distributeCards(Player player){
         Vector<Card> hand = new Vector<>();
@@ -40,9 +40,42 @@ public class Round {
         }
         player.setHand(hand);
     }
-    public void setNextPlayer(Class player) {
-        if (player == Human.class) nextPlayer = human;
+
+    public void setNextPlayer(String player) {
+        if (player.equals("human")) nextPlayer = human;
         else nextPlayer = computer;
+    }
+
+    public void changePlayer(){
+        if (nextPlayer.getType().equals("human")) {
+            nextPlayer = computer;
+        }
+        else {
+            nextPlayer = human;
+        }
+    }
+
+    public StringBuilder endRound(){
+        // the current player lost the round
+        // update the score of that player only
+        StringBuilder info = new StringBuilder();
+        if (nextPlayer.getType().equals("human")) {
+            int human_scr = human.getHandScore();
+            info.append("Human lost the round.\n");
+            info.append("Human: ").append(human_scr);
+            info.append("\nComputer: ").append(0);
+            human.updateScore(human_scr);
+            computer.updateScore(0);
+        }
+        else {
+            int comp_scr = computer.getHandScore();
+            info.append("Human won the round.\n");
+            info.append("Human: ").append(0);
+            info.append("\nComputer: ").append(comp_scr);
+            computer.updateScore(comp_scr);
+            human.updateScore(0);
+        }
+        return info;
     }
 
     public Vector<Card> getHumanHand(){
@@ -164,8 +197,8 @@ public class Round {
         return temp;
     }
 
-    public Player getNextPlayer() {
-        return nextPlayer;
+    public String getNextPlayer() {
+        return nextPlayer.getClass() == computer.getClass() ? "computer" : "human";
     }
 
     public String playComputer() {
