@@ -61,15 +61,15 @@ public class Round {
         StringBuilder info = new StringBuilder();
         if (nextPlayer.getType().equals("human")) {
             int human_scr = human.getHandScore();
-            info.append("Human lost the round.\n");
-            info.append("Human: ").append(human_scr);
-            info.append("\nComputer: ").append(0);
+            info.append("Computer went out first.\n");
+            info.append("Human Score: ").append(human_scr);
+            info.append("\nComputer Score: ").append(0);
             human.updateScore(human_scr);
             computer.updateScore(0);
         }
         else {
             int comp_scr = computer.getHandScore();
-            info.append("Human won the round.\n");
+            info.append("Human went out first.\n");
             info.append("Human: ").append(0);
             info.append("\nComputer: ").append(comp_scr);
             computer.updateScore(comp_scr);

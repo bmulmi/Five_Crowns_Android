@@ -53,7 +53,6 @@ public class StartActivity extends AppCompatActivity {
                         }
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
-
                     }
                 });
                 guess.show();

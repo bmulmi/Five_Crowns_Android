@@ -2,6 +2,7 @@ package edu.ramapo.bmulmi.fivecrowns.view;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.Image;
 import android.os.Environment;
@@ -16,6 +17,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -153,6 +156,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button arrangeBtn = findViewById(R.id.arrangeHand);
+        arrangeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                textBox.setText(round.arrangeHand());
+                refreshLayout();
+            }
+        });
+
         final Integer gameState = getIntent().getIntExtra("state",1);
 
         if (gameState == 1) {
@@ -186,23 +198,54 @@ public class MainActivity extends AppCompatActivity {
 
     private void changePlayer(){
         if (lastTurn) {
-            textBox.setText(round.endRound());
+            // display message box about the score stats
+            AlertDialog.Builder roundStat = new AlertDialog.Builder(this);
+            roundStat.setTitle("*Round Ended*")
+                    // this ends the round
+                    .setMessage(round.endRound())
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            if (game.gameEnded()) {
+                                endGame();
+                            }
+                        }
+                    })
+                    .show();
+
+            // stores the losing player
             String loser = round.getNextPlayer();
+            // stores the player who went out
             String startingPlayer = loser.equals("human") ? "computer" : "human";
+
+            // start a new round
             round = game.generateNewRound();
             round.init();
             round.setNextPlayer(startingPlayer);
             refreshLayout();
+
             lastTurn = false;
             return;
         }
         if (round.canCurrPlayerGoOut()) {
+            TextView text = findViewById(R.id.hintView);
+            String str = round.getNextPlayer() + " HAS GONE OUT!!";
+            text.append(str);
             lastTurn = true;
             round.changePlayer();
         }
         else {
             round.changePlayer();
         }
+    }
+
+    private void endGame() {
+        Intent intent = new Intent(MainActivity.this, EndActivity.class);
+        intent.putExtra("computer", round.getComputerScore());
+        intent.putExtra("human", round.getHumanScore());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        finishAffinity();
+        startActivity(intent);
     }
 
     public void makeToast(String tst) {

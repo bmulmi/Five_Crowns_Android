@@ -19,3 +19,6 @@ Total Hours: 4 hrs
 - debugged getRunsOrBooks. It was returning an empty vector when the hand had only wild cards and jokers
     it should have returned the hand with those special cards.
 - moved the toss function to start activity.
+- added controller functions to handle buttons for human and computer
+- added EndActivity
+- made some changes to UI to make it more vibrant.
