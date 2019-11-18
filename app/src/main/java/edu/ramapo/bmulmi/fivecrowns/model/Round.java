@@ -166,8 +166,7 @@ public class Round {
             // Next Player
             line = info.readLine();
             data = line.split(":");
-            data[1].trim();
-            if (data[1].toLowerCase().equals("human")) nextPlayer = human;
+            if (data[1].trim().toLowerCase().equals("human")) nextPlayer = human;
             else nextPlayer = computer;
         }
         catch (IOException e) {

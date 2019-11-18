@@ -105,8 +105,13 @@ public class Player {
         String wildCard = deck.getWildCardFace();
         Vector<Card> copyHand = copyCards(this.hand);
         Assembled assembledHand = new Assembled(copyHand);
-        int scr = getLowestScore(copyHand, assembledHand);         // stores the score of current hand before picking up the card
+        // stores the score of current hand before picking up the card
+        int scr = getLowestScore(copyHand, assembledHand);
         boolean chooseDiscard = false;
+
+
+        if (pickedCard.isJoker() || pickedCard.getFace().equals(wildCard))
+            return "discard";
 
         // pick the discard card
         copyHand.add(pickedCard);
@@ -116,10 +121,14 @@ public class Player {
         // with the newly picked card
         for (int i = 0; i < hand.size(); i++) {
             Vector<Card> temp = copyCards(copyHand);
+
+            if (temp.elementAt(i).isJoker() || temp.elementAt(i).getFace().equals(wildCard))
+                continue;
+
             temp.remove(i);
             Assembled curr_assembledHand = new Assembled(temp);
             int curr_scr = getLowestScore(temp, curr_assembledHand);
-            if (this.hand.size() < 6 && (!curr_assembledHand.bestCombo.isEmpty() && curr_assembledHand.size() >= assembledHand.size() && curr_scr < scr)){
+            if (this.hand.size() < 6 && (!curr_assembledHand.bestCombo.isEmpty() && curr_assembledHand.size() >= 2 && curr_scr < scr)){
                     assembledHand = curr_assembledHand;
                     scr = curr_scr;
                     chooseDiscard = true;

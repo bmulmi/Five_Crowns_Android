@@ -22,3 +22,5 @@ Total Hours: 4 hrs
 - added controller functions to handle buttons for human and computer
 - added EndActivity
 - made some changes to UI to make it more vibrant.
+- whichPileToChoose: whenever the assembled hands is greater than 1, dicard the card removed.
+                    whenever the card is a joker or wild, choose discard card.

@@ -228,9 +228,14 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         if (round.canCurrPlayerGoOut()) {
-            TextView text = findViewById(R.id.hintView);
-            String str = round.getNextPlayer() + " HAS GONE OUT!!";
-            text.append(str);
+            AlertDialog.Builder roundStat = new AlertDialog.Builder(this);
+            String body = round.getNextPlayer() + " has gone out.";
+            roundStat.setTitle("*Last Turn*").setMessage(body)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {}
+                    })
+                    .show();
             lastTurn = true;
             round.changePlayer();
         }
@@ -379,7 +384,7 @@ public class MainActivity extends AppCompatActivity {
                         clearCardsBackground();
                         cardView.setBackgroundColor(Color.YELLOW);
                         selectedHandCard = cardView.getId();
-                        makeToast(selectedHandCard + "");
+                        // makeToast(selectedHandCard + "");
                     }
                 });
             }
