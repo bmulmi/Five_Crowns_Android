@@ -3,6 +3,11 @@ package edu.ramapo.bmulmi.fivecrowns.model;
 import java.util.Vector;
 
 public class Validate {
+    /**
+     * function to check if the collection of card is a valid run
+     * @param a_hand vector of cards, holds the collection to be checked
+     * @return boolean value
+     */
     public static boolean isRun(Vector<Card> a_hand) {
         if (a_hand.size() < 3) return false;
 
@@ -24,6 +29,11 @@ public class Validate {
         return false;
     }
 
+    /**
+     * function to check if the collection of card is a valid book
+     * @param a_hand vector of cards, holds the collection to be checked
+     * @return boolean value
+     */
     public static boolean isBook(Vector<Card> a_hand) {
         if (a_hand.size() < 3) return false;
 
@@ -43,6 +53,11 @@ public class Validate {
         return true;
     }
 
+    /**
+     * function to check if collection has same suite of cards
+     * @param a_hand vector of cards, holds the collection of cards
+     * @return boolean value
+     */
     public static boolean hasSameSuite(Vector<Card> a_hand) {
         if (a_hand.isEmpty()) return true;
         String a_suite = a_hand.elementAt(0).getSuite();
@@ -54,6 +69,12 @@ public class Validate {
         return true;
     }
 
+    /**
+     * function to check if collection of card has potential to be run
+     * @param a_cards vector of cards, holds the collection of cards
+     * @param missingCardsCount int value, holds the missing card to complete the run
+     * @return boolean value
+     */
     public static boolean canBeRun(Vector<Card> a_cards, int[] missingCardsCount) {
         for (int i = 0; i < a_cards.size() - 1; i++) {
             if (a_cards.elementAt(i).getFaceValue() == a_cards.elementAt(i+1).getFaceValue()-1)
@@ -66,6 +87,11 @@ public class Validate {
         return true;
     }
 
+    /**
+     * function to calculate the score of hand
+     * @param a_hand vector of cards, holds the collection of card to calculate its score
+     * @return int value, score of the hand
+     */
     public static int calculateScore(Vector<Card> a_hand) {
         int score = 0;
         Deck deck = Deck.getInstanceOfDeck(2);
@@ -89,6 +115,10 @@ public class Validate {
         return score;
     }
 
+    /**
+     * function to sort in ascending order the collection of card
+     * @param a_hand vector of cards, holds the collection of card to be sorted
+     */
     public static void sortCards(Vector<Card> a_hand) {
         for (int i = 0; i < a_hand.size(); i++) {
             for (int j = 0; j < a_hand.size() - i - 1; j++) {
@@ -99,6 +129,12 @@ public class Validate {
         }
     }
 
+    /**
+     * function to swap two cards
+     * @param a_hand vector of cards, holds the collection in which to sort
+     * @param left int value, holds the index of card to swap
+     * @param right int value, holds the index of card to swap
+     */
     public static void swapCards(Vector<Card> a_hand, int left, int right) {
         Card leftCard = a_hand.elementAt(left);
         Card rightCard = a_hand.elementAt(right);
@@ -106,6 +142,11 @@ public class Validate {
         a_hand.setElementAt(leftCard, right);
     }
 
+    /**
+     * function to extract joker cards from the passed hand
+     * @param a_hand vector of cards, holds the collection of cards
+     * @return vector of cards
+     */
     public static Vector<Card> extractJokerCards(Vector<Card> a_hand) {
         Vector<Card> temp = new Vector<>();
         int handSize = a_hand.size();
@@ -121,6 +162,11 @@ public class Validate {
         return temp;
     }
 
+    /**
+     * function to extract wild cards form the passed hand
+     * @param a_hand vector of cards, holds the collection of cards
+     * @return vector of cards
+     */
     public static Vector<Card> extractWildCards(Vector<Card> a_hand) {
         Vector<Card> temp = new Vector<>();
         int handSize = a_hand.size();

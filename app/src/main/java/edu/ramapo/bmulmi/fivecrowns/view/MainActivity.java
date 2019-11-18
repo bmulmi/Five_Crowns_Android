@@ -42,10 +42,15 @@ public class MainActivity extends AppCompatActivity {
     private Game game;
     private Round round;
     private String selectedPile;
+    // stores the index of the selected human hand card
     private int selectedHandCard;
+    // stores boolean value as true when human draws a card, else false
     private boolean cardDrawn;
+    // stores boolean value as true when human discards a card, else false
     private boolean cardDiscarded;
+    // stores boolean value as true when a player goes out first
     private boolean lastTurn;
+    // stores the Hint Box of the view
     private TextView textBox;
 
     @Override
@@ -53,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // set the default values for the variables
         lastTurn = false;
         cardDiscarded = true;
         cardDrawn = false;
@@ -60,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         selectedHandCard = -1;
         textBox = findViewById(R.id.hintView);
 
+        // --------------------------- Button OnClick Listeners -----------------------------------
         Button drawButton = findViewById(R.id.drawButton);
         drawButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,11 +167,12 @@ public class MainActivity extends AppCompatActivity {
         arrangeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                textBox.setText(round.arrangeHand());
+                textBox.setText(round.arrangeHand("human"));
                 refreshLayout();
             }
         });
 
+        // --------------------------- Game State -----------------------------------
         final Integer gameState = getIntent().getIntExtra("state",1);
 
         if (gameState == 1) {
@@ -196,6 +204,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * handles altering players in the game
+     * handles end of round and game states
+     */
     private void changePlayer(){
         if (lastTurn) {
             // display message box about the score stats
@@ -236,14 +248,23 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialogInterface, int i) {}
                     })
                     .show();
+
             lastTurn = true;
+            // arrange the hand of the going out player
+            StringBuilder txt = new StringBuilder();
+            txt.append(round.arrangeHand(round.getNextPlayer()));
             round.changePlayer();
+            // display the hand of last player
+            txt.append(round.arrangeHand(round.getNextPlayer()));
         }
         else {
             round.changePlayer();
         }
     }
 
+    /**
+     * starts the EndActivity and ends the game
+     */
     private void endGame() {
         Intent intent = new Intent(MainActivity.this, EndActivity.class);
         intent.putExtra("computer", round.getComputerScore());
@@ -253,10 +274,17 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * handles the toast
+     * @param tst String value, will be used in making the toast
+     */
     public void makeToast(String tst) {
         Toast.makeText(getApplicationContext(), tst, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * refreshes the entire layout of the Main Activity
+     */
     private void refreshLayout() {
         int roundNumber = game.getRoundNumber();
         Deck deck = Deck.getInstanceOfDeck(2);
@@ -308,6 +336,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * disables all the buttons used by human
+     */
     private void disableHumanButtons() {
         findViewById(R.id.discardButton).setEnabled(false);
         findViewById(R.id.drawButton).setEnabled(false);
@@ -315,10 +346,16 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.arrangeHand).setEnabled(false);
     }
 
+    /**
+     * disables the "play" button
+     */
     private void disableComputerButtons(){
         findViewById(R.id.playButton).setEnabled(false);
     }
 
+    /**
+     * enables all the buttons used by human
+     */
     private void enableHumanButtons() {
         findViewById(R.id.discardButton).setEnabled(true);
         findViewById(R.id.drawButton).setEnabled(true);
@@ -326,10 +363,19 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.arrangeHand).setEnabled(true);
     }
 
+    /**
+     * enables the "play" button
+     */
     private void enableComputerButtons() {
         findViewById(R.id.playButton).setEnabled(true);
     }
 
+    /**
+     * Adds card image views to the layout passed in as param
+     * @param layout the Linear Layout where cards are to be added
+     * @param pile the Collection of Card objects that is matched to its corresponding drawable and displayed
+     * @param pileType String value that holds "draw" or "discard" pile as values
+     */
     private void addCardsToTable(LinearLayout layout, Collection<Card> pile, final String pileType) {
         boolean first = true;
         for (Card card : pile) {
@@ -362,6 +408,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Adds card image views to the hand layout passed in as param
+     * @param layout the Linear Layout where the hand cards to be added
+     * @param pile the Collection of Card objects that is matched to its drawable and displayed
+     * @param human boolean value that holds true if the layout is of human, must set onClick listeners for human
+     */
     private void addCardsToHand(LinearLayout layout, Collection<Card> pile, boolean human) {
         int i = 0;
         for (Card card : pile) {
@@ -393,6 +445,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Clears the background of all the clickable cards
+     */
     private void clearCardsBackground() {
         selectedHandCard = -1;
         selectedPile = "";
@@ -420,16 +475,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * checks if the device is writable for loading serialized files
+     * @return boolean value, that holds true if the device is writable
+     */
     public boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
         return Environment.MEDIA_MOUNTED.equals(state);
     }
 
+    /**
+     * checks if the device is readable for loading serialized files
+     * @return boolean value, holds true if the device is readable
+     */
     public boolean isExternalStorageReadable() {
         String state = Environment.getExternalStorageState();
         return (Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state));
     }
 
+    /**
+     * gets serialized string from model  and saves it to a filename
+     * in the storage of the device
+     */
     private void saveAndQuit() {
         String info = round.serialize();
         try {
@@ -448,6 +515,11 @@ public class MainActivity extends AppCompatActivity {
         System.exit(0);
     }
 
+    /**
+     * generates a filename not yet used by the program to save
+     * the serialized file
+     * @return File object, where the game is saved later
+     */
     private File getFile(){
         int i = 1;
         while (true){

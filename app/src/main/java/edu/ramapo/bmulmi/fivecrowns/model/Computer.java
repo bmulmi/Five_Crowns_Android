@@ -1,17 +1,25 @@
 package edu.ramapo.bmulmi.fivecrowns.model;
 
 public class Computer extends Player{
+    /**
+     * selector to get the type of the player
+     * @return string value "computer"
+     */
     public String getType() {
         return "computer";
     }
 
+    /**
+     * uses the player's strategy to make its moves
+     * @return string value, the strategy and reasoning used by computer
+     */
     public String play() {
         String strategy = "";
         deck = Deck.getInstanceOfDeck(2);
 
         String chosenPile = whichPileToChoose();
 
-        Card cardPicked = new Card();
+        Card cardPicked;
         if (chosenPile.equals("discard")) {
             strategy += "Computer chose discard pile because it helped in making a run or a book.\n";
             cardPicked = deck.drawDiscardCard();

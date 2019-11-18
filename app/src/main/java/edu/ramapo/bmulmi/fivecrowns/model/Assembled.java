@@ -13,6 +13,10 @@ public class Assembled {
         bestChild = null;
     }
 
+    /**
+     * calculates the depth of the Assembled struct tree
+     * @return int value, depth of the tree
+     */
     public int size() {
         int size = 0;
         Assembled temp = this;

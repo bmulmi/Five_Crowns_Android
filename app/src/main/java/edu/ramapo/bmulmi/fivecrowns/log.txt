@@ -12,6 +12,13 @@ Total Hours: 4 hrs
 
 11/3/2019
 - created Game and Round model
+- created Player, Human and Computer
+- Transferred CPP code into java model
+Total Hours: 5 hrs
+
+11/4/2019
+- worked on the controller of the project.
+Total Hours: 3 hrs
 
 11/17/2019
 - changed the canBeRun method parameter missingCardsCount to an array to make it mutable
@@ -24,3 +31,7 @@ Total Hours: 4 hrs
 - made some changes to UI to make it more vibrant.
 - whichPileToChoose: whenever the assembled hands is greater than 1, dicard the card removed.
                     whenever the card is a joker or wild, choose discard card.
+Total Hours: 5 hrs
+
+11/18/2019
+- documented the code

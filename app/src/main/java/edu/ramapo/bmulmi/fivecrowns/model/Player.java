@@ -1,7 +1,5 @@
 package edu.ramapo.bmulmi.fivecrowns.model;
 
-import android.view.ActionProvider;
-
 import java.util.Vector;
 
 public class Player {
@@ -16,58 +14,35 @@ public class Player {
         hand.clear();
         this.goneOut = false;
     }
+
+    /**
+     * function to get the type of the player
+     * @return string value, holds the player type
+     */
     public String getType() {
         return "player";
     }
 
+    /**
+     * function to get the score of the player
+     * @return int value, holds the player score
+     */
     public int getScore() {
         return this.score;
     }
 
+    /**
+     * function to get the hand of the player
+     * @return vector of card objects, holds the hand cards of the player
+     */
     public Vector<Card> getHand() {
         return this.hand;
     }
 
-    public void setScore(int score) {
-        this.score = score;
-    }
-
-    public void updateScore(int score) {
-        this.score += score;
-    }
-
-    public void setHand(Vector<Card> hand) {
-        this.hand = hand;
-    }
-
-    public void addToHand(Card card) {
-        this.hand.add(card);
-    }
-
-    public void clearHand() {
-        this.hand.clear();
-    }
-
-    public static Vector<Card> copyCards(Vector<Card> a_hand) {
-        Vector<Card> temp = new Vector<>();
-        for (Card each : a_hand) {
-            temp.add(each);
-        }
-        return temp;
-    }
-
-    public Card removeFromHand(int index) {
-        return this.hand.remove(index);
-    }
-
-    public String getSerializableHand() {
-        String temp = new String();
-        for (Card each : hand) {
-            temp += each.serializableString() + " ";
-        }
-        return temp;
-    }
-
+    /**
+     * function to get the current hand's score of player
+     * @return int value, holds the score of the hand
+     */
     public int getHandScore() {
         if (canGoOut()) {
             return 0;
@@ -79,6 +54,79 @@ public class Player {
         return Validate.calculateScore(scoreHand);
     }
 
+    /**
+     * function to get the hand as string object for serialization
+     * @return string value, holds the hand cards as string
+     */
+    public String getSerializableHand() {
+        String temp = new String();
+        for (Card each : hand) {
+            temp += each.serializableString() + " ";
+        }
+        return temp;
+    }
+
+    /**
+     * function to set the score of the player
+     * @param score int value, score to be set for the player
+     */
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    /**
+     * function to add to the current score of the player
+     * @param score int value, score to be added
+     */
+    public void updateScore(int score) {
+        this.score += score;
+    }
+
+    /**
+     * function to set the hand of the player
+     * @param hand vector of card objects, holds the vector to be set as hand
+     */
+    public void setHand(Vector<Card> hand) {
+        this.hand = hand;
+    }
+
+    /**
+     * function to add the card to the player's hand
+     * @param card Card object, holds the card to be added to the hand
+     */
+    public void addToHand(Card card) {
+        this.hand.add(card);
+    }
+
+    /**
+     * function to clone a vector of card objects into a new vector
+     * @param a_hand vector of card objects to be copied into a new vector
+     * @return vector of card objects
+     */
+    public static Vector<Card> copyCards(Vector<Card> a_hand) {
+        Vector<Card> temp = new Vector<>();
+        for (Card each : a_hand) {
+            temp.add(each);
+        }
+        return temp;
+    }
+
+    /**
+     * function to remove card from the hand
+     * @param index int value, holds the index value that is to be removed
+     * @return Card object that was removed from the hand
+     */
+    public Card removeFromHand(int index) {
+        return this.hand.remove(index);
+    }
+
+    /**
+     * function to remove collection of cards from the hand
+     * @param a_hand vector of card objects, holds the collection from where
+     *              the cards are to be removed
+     * @param a_cards vector of card objects, holds the card collection that is
+     *                to be removed
+     */
     public void removeCards(Vector<Card> a_hand, Vector<Card> a_cards) {
         for (Card each : a_cards) {
             for (int i = 0; i < a_hand.size(); i++) {
@@ -90,12 +138,25 @@ public class Player {
         }
     }
 
+    /**
+     * checks if the player can go out
+     * @return boolean value, holds true if score of hand is 0, else false
+     */
     public boolean canGoOut() {
         Assembled assembledHand = new Assembled(hand);
         int temp = getLowestScore(this.hand, assembledHand);
         return temp == 0;
     }
 
+    /* **************************************************************
+    Source code to use computer strategy and provide hint for players
+    *************************************************************** */
+
+    /**
+     * function to build suggestion when user asks help to choose a pile
+     * to draw a card.
+     * @return string value, holds "draw" or "discard" according to the strategy result
+     */
     protected String whichPileToChoose() {
         deck = Deck.getInstanceOfDeck(2);
 
@@ -148,6 +209,11 @@ public class Player {
         }
     }
 
+    /**
+     * function to build suggestion when user asks help to choose a card
+     * to discard from hand
+     * @return int value, holds the index of the card of the hand to discard
+     */
     protected int whichCardToDiscard() {
         Vector<Card> currHand = this.hand;
         int card_r = -1;
@@ -175,6 +241,11 @@ public class Player {
         return card_r;
     }
 
+    /**
+     * function to assemble all the runs and books
+     * @return vector of vector of cards, holds the collection of runs and books
+     * of the hand
+     */
     protected Vector<Vector<Card>> assemblePossibleHand() {
         Vector<Card> currHand = this.hand;
         Assembled assembledHand = new Assembled(currHand);
@@ -209,6 +280,17 @@ public class Player {
         return ret;
     }
 
+    /* *******************************************
+    Source code for the main strategy of the game
+    ******************************************** */
+
+    /**
+     * function to get the score of the current hand and compute best runs and books
+     * @param a_hand vector of card objects, usually holds the hand card of the player
+     * @param assembled_hands Assembled struct, holds the assembled struct of the hand
+     * @return int value, holds the score of the hand after arranging all possible runs
+     * and books
+     */
     private int getLowestScore(Vector<Card> a_hand, Assembled assembled_hands) {
         int minScore = 99999;
 
@@ -239,6 +321,11 @@ public class Player {
         return minScore;
     }
 
+    /**
+     * function to get collection of books and runs of the hand
+     * @param a_hand vector of card objects, holds the collection of cards
+     * @return vector of collection of runs and books
+     */
     private Vector<Vector<Card>> getBooksAndRuns(Vector<Card> a_hand) {
         Vector<Vector<Card>> temp = new Vector<>(new Vector());
         getBooksOrRuns(a_hand, temp, 0);
@@ -250,12 +337,15 @@ public class Player {
         return temp;
     }
 
-    private void copyHand(Vector<Card> from, Vector<Card> to, int start, int end){
-        for (int i = start; i < end; i++) {
-            to.add(from.elementAt(i));
-        }
-    }
 
+    /**
+     * function that complements the getBooksAndRuns function
+     * @param a_hand vector of card objects, holds the collection from which
+     *               to generate books and runs
+     * @param a_collection vector of collection of card objects, stores books
+     *                     and runs found by the function
+     * @param check_type int value, holds 0 to check for books, 1 for runs
+     */
     private void getBooksOrRuns(Vector<Card> a_hand, Vector<Vector<Card>> a_collection, int check_type) {
         Vector<Card> temp_hand = copyCards(a_hand);
         Vector<Card> temp_jokers = Validate.extractJokerCards(temp_hand);
@@ -313,6 +403,47 @@ public class Player {
         }
     }
 
+    /**
+     * function to get collection of same suite cards of the hand
+     * @param a_hand vector of card objects, holds the collection of cards
+     * @return vector of collection of same suite cards
+     */
+    private Vector<Vector<Card>> getSameSuiteHands(Vector<Card> a_hand) {
+        String [] suite = new String[] {"S", "C", "D", "H", "T"};
+        Vector<Card> jokers = Validate.extractJokerCards(a_hand);
+        Vector<Card> wilds = Validate.extractWildCards(a_hand);
+        Vector<Vector<Card>> temp = new Vector<>();
+
+        for (String e_suite : suite) {
+            Vector<Card> curr = new Vector<>();
+            for (Card e_card : a_hand) {
+                if (e_card.getSuite().equals(e_suite)) {
+                    curr.add(e_card);
+                }
+            }
+            // add the jokers or wild cards only when there are 2 or more cards
+            if (curr.size() > 1) {
+                for (Card each : jokers) {
+                    curr.add(each);
+                }
+                for (Card each : wilds) {
+                    curr.add(each);
+                }
+                temp.add(curr);
+            }
+        }
+        return temp;
+    }
+
+    /**
+     * function that combines wild cards or jokers to the passed hand to
+     * generate possible possible books and runs
+     * @param a_hand vector of card objects, holds the collection of cards
+     * @param a_cards vector of card objects, holds the special cards
+     * @param a_collection vector of collection of card objects, stores books
+     *                     and runs found by the function
+     * @param check_type int value, holds 0 to check for books, 1 for runs
+     */
     private void combineAndCheck(Vector<Card> a_hand, Vector<Card> a_cards, Vector<Vector<Card>> a_collection, int check_type) {
         for (int i = 0; i < a_hand.size(); i++) {
             for (int j = 0; j < a_hand.size() + 1 - i; j++) {
@@ -340,6 +471,16 @@ public class Player {
         }
     }
 
+    /**
+     * function that combines both wild cards and jokers to the passed hand to
+     * generate possible possible books and runs
+     * @param a_hand vector of card objects, holds the collection of cards
+     * @param a_cards1 vector of card objects, holds wild cards
+     * @param a_cards2 vector of card objects, holds joker cards
+     * @param a_collection vector of collection of card objects, stores books
+     *                      and runs found by the function
+     * @param check_type int value, holds 0 to check for books, 1 for runn
+     */
     private void combineTwoAndCheck(Vector<Card> a_hand, Vector<Card> a_cards1, Vector<Card> a_cards2,
                                     Vector<Vector<Card>> a_collection, int check_type) {
         for (int i = 0; i < a_hand.size(); i++) {
@@ -376,30 +517,17 @@ public class Player {
         }
     }
 
-    private Vector<Vector<Card>> getSameSuiteHands(Vector<Card> a_hand) {
-        String [] suite = new String[] {"S", "C", "D", "H", "T"};
-        Vector<Card> jokers = Validate.extractJokerCards(a_hand);
-        Vector<Card> wilds = Validate.extractWildCards(a_hand);
-        Vector<Vector<Card>> temp = new Vector<>();
-
-        for (String e_suite : suite) {
-            Vector<Card> curr = new Vector<>();
-            for (Card e_card : a_hand) {
-                if (e_card.getSuite().equals(e_suite)) {
-                    curr.add(e_card);
-                }
-            }
-            // add the jokers or wild cards only when there are 2 or more cards
-            if (curr.size() > 1) {
-                for (Card each : jokers) {
-                    curr.add(each);
-                }
-                for (Card each : wilds) {
-                    curr.add(each);
-                }
-                temp.add(curr);
-            }
+    /**
+     * function that copies certain part of a vector of cards to another vector
+     * @param from vector of card objects, holds cards to be copied from
+     * @param to vector of card objects, holds cards to copy into
+     * @param start int value, holds starting index to copy from
+     * @param end int value, holds last index to copy from
+     */
+    private void copyHand(Vector<Card> from, Vector<Card> to, int start, int end){
+        for (int i = start; i < end; i++) {
+            to.add(from.elementAt(i));
         }
-        return temp;
     }
+
 }

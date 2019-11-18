@@ -31,20 +31,24 @@ public class StartActivity extends AppCompatActivity {
             public void onClick(View view) {
                 AlertDialog.Builder guess = new AlertDialog.Builder(StartActivity.this);
                 guess.setTitle("Toss: Heads or Tails");
-                Random rand = new Random();
-                int temp = rand.nextInt(15189);
-                final int tossResult = temp;
+
                 final String[] choice = {"Heads", "Tails"};
                 final String result;
 
+                // display the toss dialogue and start the main activity
                 guess.setItems(choice, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         ListView select = ((AlertDialog)dialogInterface).getListView();
                         String selected = (String) select.getAdapter().getItem(i);
                         final Intent intent = new Intent(StartActivity.this, MainActivity.class);
-
                         intent.putExtra("state",1);
+
+                        // generate a random integer
+                        Random rand = new Random();
+                        int temp = rand.nextInt(15189);
+                        int tossResult = temp;
+
                         if ((selected.equals("Heads") && tossResult == 0) || (selected.equals("Tails") && tossResult == 1)) {
                             intent.putExtra("turn", "human");
                         }
@@ -82,6 +86,7 @@ public class StartActivity extends AppCompatActivity {
                 String [] items = new String[nameList.size()];
                 items = nameList.toArray(items);
 
+                // show the load file list and start the main activity
                 prompt.setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int these) {
