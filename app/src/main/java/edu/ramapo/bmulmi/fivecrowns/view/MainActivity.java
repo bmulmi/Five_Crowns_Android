@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -52,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean lastTurn;
     // stores the Hint Box of the view
     private TextView textBox;
+    // stores boolean value as true when a round ends
+    private boolean roundEnded;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +65,11 @@ public class MainActivity extends AppCompatActivity {
         lastTurn = false;
         cardDiscarded = true;
         cardDrawn = false;
+        roundEnded = false;
         selectedPile = "";
         selectedHandCard = -1;
         textBox = findViewById(R.id.hintView);
+        textBox.setMovementMethod(new ScrollingMovementMethod());
 
         // --------------------------- Button OnClick Listeners -----------------------------------
         Button drawButton = findViewById(R.id.drawButton);
@@ -172,6 +177,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button nextBtn = findViewById(R.id.next);
+        nextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (game.gameEnded()) {
+                    endGame();
+                }
+                // stores the losing player
+                String loser = round.getNextPlayer();
+                // stores the player who went out
+                String startingPlayer = loser.equals("human") ? "computer" : "human";
+
+                // start a new round
+                round = game.generateNewRound();
+                round.init();
+                round.setNextPlayer(startingPlayer);
+                roundEnded = false;
+
+                refreshLayout();
+            }
+        });
         // --------------------------- Game State -----------------------------------
         final Integer gameState = getIntent().getIntExtra("state",1);
 
@@ -210,33 +236,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void changePlayer(){
         if (lastTurn) {
-            // display message box about the score stats
-            AlertDialog.Builder roundStat = new AlertDialog.Builder(this);
-            roundStat.setTitle("*Round Ended*")
-                    // this ends the round
-                    .setMessage(round.endRound())
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            if (game.gameEnded()) {
-                                endGame();
-                            }
-                        }
-                    })
-                    .show();
-
-            // stores the losing player
-            String loser = round.getNextPlayer();
-            // stores the player who went out
-            String startingPlayer = loser.equals("human") ? "computer" : "human";
-
-            // start a new round
-            round = game.generateNewRound();
-            round.init();
-            round.setNextPlayer(startingPlayer);
-            refreshLayout();
-
-            lastTurn = false;
+            endRound();
             return;
         }
         if (round.canCurrPlayerGoOut()) {
@@ -252,14 +252,40 @@ public class MainActivity extends AppCompatActivity {
             lastTurn = true;
             // arrange the hand of the going out player
             StringBuilder txt = new StringBuilder();
-            txt.append(round.arrangeHand(round.getNextPlayer()));
+            txt.append(round.arrangeHand(round.getNextPlayer())).append("\n");
             round.changePlayer();
-            // display the hand of last player
-            txt.append(round.arrangeHand(round.getNextPlayer()));
+
+            textBox.setText(txt);
         }
         else {
             round.changePlayer();
         }
+    }
+
+    private void endRound() {
+        // display message box about the score stats
+        AlertDialog.Builder roundStat = new AlertDialog.Builder(this);
+        roundStat.setTitle("*Round Ended*")
+                // this ends the round
+                .setMessage(round.endRound())
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {}
+                })
+                .show();
+        // disable all buttons
+        disableHumanButtons();
+        disableComputerButtons();
+
+        // enable the next round button
+        findViewById(R.id.next).setEnabled(true);
+
+        StringBuilder txt = new StringBuilder();
+        // display the hand of last player
+        txt.append(round.arrangeHand(round.getNextPlayer()));
+        textBox.setText(txt);
+        lastTurn = false;
+        roundEnded = true;
     }
 
     /**
@@ -326,13 +352,21 @@ public class MainActivity extends AppCompatActivity {
         addCardsToHand(computerHandView, computerHand, false);
 
         String nextPlayer = round.getNextPlayer();
-        if(nextPlayer.equals("computer")) {
+        if(roundEnded) {
             disableHumanButtons();
-            enableComputerButtons();
+            disableComputerButtons();
+            findViewById(R.id.next).setEnabled(true);
         }
         else {
-            disableComputerButtons();
-            enableHumanButtons();
+            findViewById(R.id.next).setEnabled(false);
+            if(nextPlayer.equals("computer")) {
+                disableHumanButtons();
+                enableComputerButtons();
+            }
+            else {
+                disableComputerButtons();
+                enableHumanButtons();
+            }
         }
     }
 

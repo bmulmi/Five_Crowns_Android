@@ -35,3 +35,6 @@ Total Hours: 5 hrs
 
 11/18/2019
 - documented the code
+- debugged the toss functionality
+- debugged the load function in round class, next player was always computer because trim() was not used
+- added play next round button on the main activity

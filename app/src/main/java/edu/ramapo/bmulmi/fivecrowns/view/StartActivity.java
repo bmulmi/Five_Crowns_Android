@@ -32,7 +32,7 @@ public class StartActivity extends AppCompatActivity {
                 AlertDialog.Builder guess = new AlertDialog.Builder(StartActivity.this);
                 guess.setTitle("Toss: Heads or Tails");
 
-                final String[] choice = {"Heads", "Tails"};
+                final String[] choice = {"heads", "tails"};
                 final String result;
 
                 // display the toss dialogue and start the main activity
@@ -46,10 +46,10 @@ public class StartActivity extends AppCompatActivity {
 
                         // generate a random integer
                         Random rand = new Random();
-                        int temp = rand.nextInt(15189);
-                        int tossResult = temp;
+                        int temp = rand.nextInt(10000);
+                        int tossResult = temp % 2;
 
-                        if ((selected.equals("Heads") && tossResult == 0) || (selected.equals("Tails") && tossResult == 1)) {
+                        if ((selected.equals("heads") && tossResult == 0) || (selected.equals("tails") && tossResult == 1)) {
                             intent.putExtra("turn", "human");
                         }
                         else {
