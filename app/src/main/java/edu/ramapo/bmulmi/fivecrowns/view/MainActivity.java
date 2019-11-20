@@ -1,25 +1,26 @@
+/************************************************************
+ * Name: Bibhash Mulmi                                      *
+ * Project: Project 3, Five Crowns Android                  *
+ * Class: OPL Fall 19                                       *
+ * Date: 11/20/2019                                         *
+ ************************************************************/
 package edu.ramapo.bmulmi.fivecrowns.view;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -134,8 +135,9 @@ public class MainActivity extends AppCompatActivity {
                         ImageView pile = findViewById(id);
                         pile.setBackgroundColor(Color.CYAN);
                     }
-                    String text = "You should choose " + hint + " pile because it helps in making your score lower.\n";
-                    textBox.setText(text);
+                    String text = "You should choose " + hint + " pile because it helps in making runs or books.\n";
+                    textBox.append("\n");
+                    textBox.append(text);
                 }
                 else if (cardDrawn) {
                     // ask for which card to discard
@@ -143,7 +145,8 @@ public class MainActivity extends AppCompatActivity {
                     ImageView card = findViewById(hint);
                     card.setBackgroundColor(Color.CYAN);
                     String text = "You should discard " + round.getHumanHand().elementAt(hint).serializableString() +" because it helps in making your score lower.\n";
-                    textBox.setText(text);
+                    textBox.append("\n");
+                    textBox.append(text);
                 }
             }
         });
@@ -161,7 +164,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(round.getNextPlayer().equals("computer")) {
-                    textBox.setText(round.playComputer());
+                    textBox.append("\n");
+                    textBox.append(round.playComputer());
                     changePlayer();
                     refreshLayout();
                 }
@@ -172,7 +176,8 @@ public class MainActivity extends AppCompatActivity {
         arrangeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                textBox.setText(round.arrangeHand("human"));
+                textBox.append("\n");
+                textBox.append(round.arrangeHand("human"));
                 refreshLayout();
             }
         });
@@ -254,14 +259,19 @@ public class MainActivity extends AppCompatActivity {
             StringBuilder txt = new StringBuilder();
             txt.append(round.arrangeHand(round.getNextPlayer())).append("\n");
             round.changePlayer();
-
-            textBox.setText(txt);
+            textBox.append("\n");
+            textBox.append(txt);
         }
         else {
             round.changePlayer();
         }
     }
 
+    /**
+     * ends the round and generates a new one
+     * also checks for the end of the game and
+     * changes the activity accordingly
+     */
     private void endRound() {
         // display message box about the score stats
         AlertDialog.Builder roundStat = new AlertDialog.Builder(this);
@@ -283,7 +293,8 @@ public class MainActivity extends AppCompatActivity {
         StringBuilder txt = new StringBuilder();
         // display the hand of last player
         txt.append(round.arrangeHand(round.getNextPlayer()));
-        textBox.setText(txt);
+        textBox.append("\n");
+        textBox.append(txt);
         lastTurn = false;
         roundEnded = true;
     }

@@ -303,6 +303,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10px"
                 android:layout_marginRight="10px"
+                android:gravity="bottom"
                 android:scrollbars="vertical"
                 android:text="Hint"
                 android:textColor="@android:color/black" />

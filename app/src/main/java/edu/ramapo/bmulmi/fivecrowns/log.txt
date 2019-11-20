@@ -38,3 +38,10 @@ Total Hours: 5 hrs
 - debugged the toss functionality
 - debugged the load function in round class, next player was always computer because trim() was not used
 - added play next round button on the main activity
+Total Hours: 1 hr
+
+11/19/2019
+- Changed setText to append on every call on setText on Hint box. Now, the entire log is recorded in the hint box.
+- tweaked the strategy for hand size less than 6. Now, the computer checks if the discard pile helps in making a run
+or a book and only suggest it when it does. else it suggests the draw pile card.
+Total Hours: 0.5 hr

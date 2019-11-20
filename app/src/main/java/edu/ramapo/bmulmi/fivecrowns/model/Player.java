@@ -1,3 +1,9 @@
+/************************************************************
+ * Name: Bibhash Mulmi                                      *
+ * Project: Project 3, Five Crowns Android                  *
+ * Class: OPL Fall 19                                       *
+ * Date: 11/20/2019                                         *
+ ************************************************************/
 package edu.ramapo.bmulmi.fivecrowns.model;
 
 import java.util.Vector;
@@ -189,7 +195,7 @@ public class Player {
             temp.remove(i);
             Assembled curr_assembledHand = new Assembled(temp);
             int curr_scr = getLowestScore(temp, curr_assembledHand);
-            if (this.hand.size() < 6 && (!curr_assembledHand.bestCombo.isEmpty() && curr_assembledHand.size() >= 2 && curr_scr < scr)){
+            if (this.hand.size() < 6 && (!curr_assembledHand.bestCombo.isEmpty() && curr_assembledHand.bestCombo.size() > assembledHand.bestCombo.size() && curr_scr < scr)){
                     assembledHand = curr_assembledHand;
                     scr = curr_scr;
                     chooseDiscard = true;
