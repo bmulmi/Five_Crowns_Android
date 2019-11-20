@@ -9,10 +9,19 @@ package edu.ramapo.bmulmi.fivecrowns.model;
 public class Card {
     private String face;
     private String suite;
+
+    /**
+     * Default constructor
+     */
     public Card() {
         this("","");
     }
 
+    /**
+     * Constructor for Card class
+     * @param face string value, holds the face of card
+     * @param suite string value, holds the suite of card
+     */
     public Card(String face, String suite) {
         this.face = face;
         this.suite = suite;

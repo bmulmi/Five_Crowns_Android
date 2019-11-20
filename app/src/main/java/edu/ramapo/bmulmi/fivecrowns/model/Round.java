@@ -19,6 +19,12 @@ public class Round {
     private Deck deck;
     private int roundNumber;
 
+    /**
+     * Constructor for Round class
+     * @param human player object, holds the human player object
+     * @param computer player object, holds the computer player object
+     * @param roundNumber int value, holds the round number
+     */
     public Round(Player human, Player computer, int roundNumber) {
         this.roundNumber = roundNumber;
         this.human = (Human) human;

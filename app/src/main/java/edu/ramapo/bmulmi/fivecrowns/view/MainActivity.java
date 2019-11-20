@@ -57,6 +57,11 @@ public class MainActivity extends AppCompatActivity {
     // stores boolean value as true when a round ends
     private boolean roundEnded;
 
+    /**
+     * sets onClick listeners for all the buttons in this activity
+     * loads the game according to the intent parameters passed
+     * from the start activity
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

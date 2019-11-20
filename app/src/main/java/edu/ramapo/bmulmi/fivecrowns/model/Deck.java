@@ -24,6 +24,10 @@ public class Deck {
 
     private String wildCardFace;
 
+    /**
+     * Constructor for the Deck class
+     * @param numDecks int value, holds the number of decks to create
+     */
     private Deck(int numDecks) {
         Deque<Card> initialDeck = arrangeDeck(numDecks);
         drawPile = initialDeck;

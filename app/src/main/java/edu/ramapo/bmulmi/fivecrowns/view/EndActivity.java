@@ -17,6 +17,10 @@ import edu.ramapo.bmulmi.fivecrowns.R;
 
 public class EndActivity extends AppCompatActivity {
 
+    /**
+     * sets the text to display the winner of the game
+     * sets onClick listeners for the Play Again and Exit buttons
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

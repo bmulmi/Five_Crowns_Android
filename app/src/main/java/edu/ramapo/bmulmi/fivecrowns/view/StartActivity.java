@@ -25,6 +25,11 @@ import edu.ramapo.bmulmi.fivecrowns.R;
 
 public class StartActivity extends AppCompatActivity {
 
+    /**
+     * sets onClick Listener for New Game and Load Game buttons
+     * displays the dialog box according to the button clicked
+     * starts the main activity
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

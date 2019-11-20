@@ -14,6 +14,9 @@ public class Player {
     protected Deck deck;
     protected Vector<Card> hand;
 
+    /**
+     * Constructor for player class
+     */
     public Player() {
         this.score = 0;
         this.hand = new Vector<>();

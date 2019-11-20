@@ -26,6 +26,10 @@ public class Game {
         this(1);
     }
 
+    /**
+     * Constructor for the Game class
+     * @param roundNumber int value, holds the round number of the game
+     */
     public Game(int roundNumber){
         this.roundNumber = roundNumber;
         this.human = new Human();
